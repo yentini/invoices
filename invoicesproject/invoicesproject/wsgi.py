@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'invoicesproject.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'invoicesproject.settings.local')
 
 application = get_wsgi_application()

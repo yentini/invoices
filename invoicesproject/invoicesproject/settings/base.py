@@ -40,6 +40,8 @@ DJANGO_APPS = (
 
 LOCAL_APPS = (
     'applications.users',
+    'applications.configuration',
+    'applications.client',
 )
 
 THIRD_PARTY_APPS = (
@@ -78,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'blog.wsgi.application'
+WSGI_APPLICATION = 'invoicesproject.wsgi.application'
 
 
 # Password validation
