@@ -14,14 +14,16 @@
                     <a href="/">Home</a>
                 </li>
                 <li>
-                    <a href="{% url 'entrada_app:entry-lista' %}">Blog</a>
+                    {#<a href="{% url 'entrada_app:entry-lista' %}">Blog</a>#}
+                    <a href="">Facturas</a>
                 </li>
-                <li>
-                    
+                <li>                    
                     {% if not user.is_anonymous %}
-                        <a href="{% url 'favoritos_app:perfil' %}" class="warning button">Perfil</a>
+                        <a href="">Perfil</a>
+                        {#<a href="{% url 'favoritos_app:perfil' %}" class="warning button">Perfil</a>#}
                     {% else %}
-                        <a href="{% url 'users_app:user-login' %}" class="success button">Acceder</a>
+                        <a href="">Acceder</a>
+                        {#<a href="{% url 'users_app:user-login' %}" class="success button">Acceder</a>#}
                     {% endif %}
                 </li>
                 

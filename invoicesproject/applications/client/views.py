@@ -9,9 +9,9 @@ from django.views.generic import (
 from .models import Clients
 
 class ClientListView(ListView):
-    template_name = "client/lista.html"
+    template_name = "client/list.html"
     context_object_name = 'clients'
-    paginate_by = 3
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super(ClientListView, self).get_context_data(**kwargs)
