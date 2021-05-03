@@ -1,0 +1,88 @@
+<!-- head para PC -->
+{% extends "client/base_client.html" %}
+
+{% load  static %}
+
+{% block content %}
+
+{% include "includes/header.html" %}
+
+<div class="grid-container">
+    <div class="grid-x grid-margin-x" style="margin-top: 1em;">
+        <!-- primer bloque pantalla -->
+        <div class="cell small-12 large-12">
+            <!-- inicio bloque detalle client -->
+            <div class="grid-x grid-margin-x">                
+                <h1 class="cell">{{ client_name }}</h1>
+                <form class="grid-x grid-margin-x" method="POST" enctype="multipart/form-data">{% csrf_token %}                    
+                    <div class="large-6 cell">
+                        <label>Nombre:
+                          {{ form.name }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Alias:
+                            {{ form.alias }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Tipo de documento:
+                            {{ form.document_type }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Documento:
+                            {{ form.cif }}
+                        </label>
+                        {% for e in  form.cif.errors %}
+                        <p style="color:red;">{{ e }}</p>
+                      {% endfor %}
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Dirección:
+                            {{ form.address }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Ciudad:
+                            {{ form.city }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Provincia:
+                            {{ form.province }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Código postal:
+                            {{ form.postal_code }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Código de factura:
+                            {{ form.invoice_code }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Siguiente factura:
+                            {{ form.invoice_index }}
+                        </label>
+                    </div>
+                    <div class="large-6 cell">
+                        <label>Email:
+                            {{ form.email }}
+                        </label>
+                    </div>                    
+                    <div class="cell">
+                        <button type="submit" class="success button">Guardar</button>
+                    </div>   
+                </form>                 
+            </div>
+            <!-- FIN bloque de detalle cliente -->
+        </div>
+        <!-- FIN primer bloque pantalla  -->    
+    </div>
+</div>
+{% include "includes/footer.html" %}
+
+{% endblock content %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Clients, Documenttype
+from .models import Client, Documenttype
 
 # Register your models here.
-admin.site.register(Clients)
+admin.site.register(Client)
 admin.site.register(Documenttype)

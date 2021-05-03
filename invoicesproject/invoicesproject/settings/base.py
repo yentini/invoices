@@ -42,6 +42,7 @@ LOCAL_APPS = (
     'applications.users',
     'applications.configuration',
     'applications.client',
+    'applications.invoice',
 )
 
 THIRD_PARTY_APPS = (

@@ -6,7 +6,14 @@
             </a>
         </div>
         <div class="cell small-12 medium-4">
-            
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a href="#">Clientes</a>
+                    <ul class="menu">
+                        <li><a href="{% url 'client_app:client-list' %}">Listado</a></li>
+                        <li><a href="{% url 'client_app:client-list' %}">Nuevo</a></li>
+                    </ul>                   
+                </li>
+              </ul>
         </div>
         <div class="cell small-12 large-5">
             <ul class="menu" style="justify-content: flex-end;">
@@ -25,8 +32,7 @@
                         <a href="">Acceder</a>
                         {#<a href="{% url 'users_app:user-login' %}" class="success button">Acceder</a>#}
                     {% endif %}
-                </li>
-                
+                </li>                
             </ul>
         </div>
     </div>

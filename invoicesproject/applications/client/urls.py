@@ -11,8 +11,23 @@ urlpatterns = [
         name='client-list',
     ),
     path(
-        'entrada/<pk>/', 
+        'client/<pk>/', 
         views.ClientDetailView.as_view(),
         name='client-detail',
+    ),
+    path(
+        'update-client/<pk>/',
+        views.ClientUpdateView.as_view(),
+        name = 'client-update'
+    ),
+    path(
+        'delete-client/<pk>/',
+        views.ClientDeleteView.as_view(),
+        name = 'client-delete'
+    ),
+    path(
+        'add-client/', 
+        views.ClientCreateView.as_view(),
+        name='client-add'
     ),
 ]

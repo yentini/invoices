@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from model_utils.models import TimeStampedModel
 
 #managers
@@ -7,18 +8,16 @@ from .managers import ClientManager
 class Documenttype(models.Model):
     type = models.CharField(max_length=25)
 
-    class Meta:
-        managed = False
-        db_table = 'documentType'
+    class Meta:     
         ordering = ['pk']
         verbose_name = 'Document Type'
         verbose_name_plural = 'Documents Type'
 
     def __str__(self):
-        return str(self.id) + '-' + self.type
+        return self.type
 
 # Create your models here.
-class Clients(TimeStampedModel):
+class Client(TimeStampedModel):
     name = models.CharField(max_length=50)
     cif = models.CharField(max_length=11, unique=True)
     address = models.CharField(max_length=100)
@@ -30,16 +29,22 @@ class Clients(TimeStampedModel):
     email = models.CharField(max_length=50, unique=True)
     alias = models.CharField(max_length=100, blank=True, null=True)
     document_type = models.ForeignKey(Documenttype, db_column='documentType', on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='user_client',
+        on_delete=models.CASCADE,
+    )
 
     objects = ClientManager()
 
     class Meta:
-        managed = False
-        db_table = 'clients'
         verbose_name = 'Client'
         verbose_name_plural = 'Clients'
         ordering = ['-name']
-        #unique_together = ('cif','short_name')
+        unique_together = ('cif','name')
 
     def __str__(self):
         return self.name + '-' + self.cif
+
+    def save(self, *args, **kwargs):
+        super(Client, self).save(*args, **kwargs)
