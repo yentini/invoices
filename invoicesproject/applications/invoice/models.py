@@ -4,6 +4,8 @@ from model_utils.models import TimeStampedModel
 
 from applications.client.models import Client
 
+#managers
+from .managers import InvoiceManager
 
 # Create your models here.
 class Invoice(TimeStampedModel):
@@ -25,7 +27,7 @@ class Invoice(TimeStampedModel):
     class Meta:
         verbose_name = 'Invoice'
         verbose_name_plural = 'Invoices'
-        ordering = ['-user', '-created']
+      #  ordering = ['-user', '-created']
         unique_together = ('user','code')
     
     def __str__(self):
@@ -49,10 +51,12 @@ class InvoiceLine(TimeStampedModel):
         on_delete=models.CASCADE,
     )
 
+    objects = InvoiceManager()
+
     class Meta:
         verbose_name = 'Invoice Line'
         verbose_name_plural = 'Invoice Lines'
-        ordering = ['-invoice', 'created']
+       # ordering = ['-invoice', 'created']
     
     def __str__(self):
         return self.invoice.code + '-' + str(self.id)

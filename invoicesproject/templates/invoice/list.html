@@ -1,0 +1,129 @@
+<!-- head para PC -->
+{% extends "invoice/base_invoice.html" %}
+
+{% load  static %}
+
+{% block content %}
+
+{% include "includes/header.html" %}
+
+<div class="grid-container">
+    <div class="grid-x grid-margin-x" style="margin-top: 1em;">
+        <!-- primer bloque pantalla -->
+        <div class="cell small-12 large-12">
+
+            <!-- bloque de buscador -->
+            <form class="input-group" method="GET">{% csrf_token %}
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x">
+                        <div class="large-6 cell">
+                            Cliente:
+                            <select id="client" name="client">
+                                <option  value="" selected="selected">---SELECT---</option>
+                                {% for client in clients %}
+                                <option value="{{ client.id }}">{{client.alias|capfirst}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="large-3 cell">
+                            Mes:
+                            <select id="months" name="months">
+                                <option  value="" selected="selected">---SELECT---</option>
+                                {% for month in months %}
+                                <option value="{{ month }}">{{ month }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="large-3 cell">
+                            Año:
+                            <select id="years" name="years">
+                                <option  value="" selected="selected">---SELECT---</option>
+                                {% for year in years %}
+                                <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="cell">
+                            <input type="submit" class="button" value="Buscar">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- FIN bloque de formulario -->
+
+            <!-- inicio bloque de resultados de busqueda -->
+            <div class="grid-x grid-margin-x">
+                <div class="cell small-12 large-12">
+                    <h2>Facturas</h2>
+                </div>
+                <table class="hover">
+                    <thead>
+                        <tr>
+                            <th width="150">Cliente</th>
+                            <th width="50">Código de factura</th>
+                            <th width="50">Fecha</th>
+                            <th width="50">Importe bruto</th>
+                            <th width="50"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inv in invoices  %}                    
+                        <tr>
+                            <td>{{ inv.invoice__client__alias }}</td>
+                            <td>{{ inv.invoice__code }}</td>
+                            <td>{{ inv.invoice__date }}</td>
+                            <td>{{ inv.total_price }}</td>
+                            <td>Eliminar</td>                                             
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">
+                                <h3 style="color:red;">No hay resultados</h3>
+                            </td>
+                        </tr>                        
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- FIN bloque de resultados de busqueda -->
+        </div>
+        <!-- FIN primer bloque pantalla  -->
+    
+    </div>
+
+    <!-- inicio de bloque de paginacion -->
+    <div class="cell">
+        {% if is_paginated %}
+        <nav aria-label="Pagination">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="pagination-previous">
+                    <a href="?page={{page_obj.previous_page_number}}">Atras</a>
+                </li>
+                {% endif %}
+                
+                {% for pagina in paginator.page_range %}
+
+                
+                {% ifequal pagina page_obj.number %}
+                <li class="current"><span class="show-for-sr">You're on page</span> {{ pagina }}</li>
+                {% else %}
+                <li class=""><a href="?page={{pagina}}">{{ pagina }}</a></li>
+                {% endifequal %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="pagination-next">
+                    <a href="?page={{page_obj.next_page_number}}">Siguiente</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    <!-- FIN bloque de paginacion -->
+</div>
+{% include "includes/footer.html" %}
+
+{% endblock content %}
