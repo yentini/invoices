@@ -11,7 +11,6 @@
     <div class="grid-x grid-margin-x" style="margin-top: 1em;">
         <!-- primer bloque pantalla -->
         <div class="cell small-12 large-12">
-
             <!-- bloque de buscador -->
             <form class="input-group" method="GET">{% csrf_token %}
                 <div class="grid-container">
@@ -21,7 +20,9 @@
                             <select id="client" name="client">
                                 <option  value="" selected="selected">---SELECT---</option>
                                 {% for client in clients %}
-                                <option value="{{ client.id }}">{{client.alias|capfirst}}</option>
+                                <option value="{{ client.id }}"{% if current_client|escape == client.id|escape %}selected="selected"{% endif %}>
+                                    {{client.alias|capfirst}}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -30,7 +31,9 @@
                             <select id="months" name="months">
                                 <option  value="" selected="selected">---SELECT---</option>
                                 {% for month in months %}
-                                <option value="{{ month }}">{{ month }}</option>
+                                <option value="{{ month }}" {% if current_month|escape == month|escape %}selected="selected"{% endif %}>
+                                    {{ month }}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -38,8 +41,11 @@
                             Año:
                             <select id="years" name="years">
                                 <option  value="" selected="selected">---SELECT---</option>
-                                {% for year in years %}
-                                <option value="{{ year }}">{{ year }}</option>
+                                {% for year in years %}   
+                                {{ current_year}}-{{ year }}
+                                <option value="{{ year }}" {% if current_year|escape == year|escape %}selected="selected"{% endif %}>
+                                    {{ year }}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
