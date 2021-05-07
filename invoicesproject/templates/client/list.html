@@ -29,23 +29,25 @@
                 <table class="hover">
                     <thead>
                         <tr>
-                        <th width="150">Alias</th>
+                        <th width="100">Alias</th>
                         <th width="200">Name</th>
-                        <th width="150">Documento</th>
+                        <th width="50">Documento</th>
+                        <th width="50"></th>
                         <th width="50"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody> 
                         {% for client in clients  %}                    
                         <tr>
                             <td>{{ client.alias }}</td>
                             <td><a href="{% url 'client_app:client-update' client.id %}">{{ client.name | truncatechars:200}}</a></td>
                             <td>{{ client.cif }}</td>
-                            <td><a href="{% url 'client_app:client-delete' client.id %}">Eliminar</a></td>                                             
+                            <td><a href="{% url 'client_app:client-delete' client.id %}"><img src="{% static 'img/eliminar.png' %}" alt="Eliminar" style="width:35px;height:35px;"></img></a></td>
+                            <td><a href="{% url 'invoice_app:invoice-list'%}?client={{ client.id }}"><img src="{% static 'img/facturas.png' %}" alt="Facturas" style="width:35px;height:35px;"></img></a></td>                                             
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="3">
+                            <td colspan="5">
                                 <h3 style="color:red;">No hay resultados</h3>
                             </td>
                         </tr>                        
