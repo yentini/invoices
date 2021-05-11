@@ -70,17 +70,38 @@
                             <th width="50">Código de factura</th>
                             <th width="50">Fecha</th>
                             <th width="50">Importe bruto</th>
-                            <th width="50"></th>
+                            <th width="40"></th>
+                            <th width="40"></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for inv in invoices  %}                    
                         <tr>
-                            <td>{{ inv.invoice__client__alias }}</td>
-                            <td>{{ inv.invoice__code }}</td>
-                            <td>{{ inv.invoice__date }}</td>
-                            <td>{{ inv.total_price }}</td>
-                            <td>Eliminar</td>                                             
+                            <td>{{ inv.client__alias }}</td>
+                            <td><a href="{% url 'invoice_app:invoice-detail' inv.id %}">{{ inv.invoice__code }}</a></td>
+                            <td>{{ inv.date }}</td>
+                            <td>
+                                {% if inv.total_price is None %}
+                                    0
+                                {% else %}
+                                    {{ inv.total_price }}
+                                {% endif %}
+                            </td>
+                            <div class="reveal" id="form_delete_invoice_{{inv.invoice__id}}" data-reveal>
+                                <form class="grid-x grid-margin-x" action="{% url 'invoice_app:invoice-delete' inv.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}                    
+                                    <div class="large-6 cell">
+                                        <h3>¿Confirmar borrado de la factura?</h3>
+                                    </div>                                              
+                                    <div class="cell">
+                                        <button type="submit" class="success button">Confirmar</button>
+                                    </div>   
+                                </form>
+                                <button class="close-button" data-close aria-label="Close modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button> 
+                            </div>
+                            <td><a data-open="form_delete_invoice_{{inv.id}}"><img src="{% static 'img/eliminar.png' %}" alt="Eliminar" style="width:35px;height:35px;"></img></a></td>
+                            <td><a href="{% url 'invoice_app:invoice-detail' inv.id %}"><img src="{% static 'img/lupa.png' %}" alt="Ver" style="width:35px;height:35px;"></img></a></td>                                           
                         </tr>
                         {% empty %}
                         <tr>

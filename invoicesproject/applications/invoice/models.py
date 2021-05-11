@@ -5,7 +5,7 @@ from model_utils.models import TimeStampedModel
 from applications.client.models import Client
 
 #managers
-from .managers import InvoiceManager
+from .managers import InvoiceManager, InvoiceLineManager
 
 # Create your models here.
 class Invoice(TimeStampedModel):
@@ -22,7 +22,7 @@ class Invoice(TimeStampedModel):
         on_delete=models.CASCADE,
     )
 
-    #objects = InvoiceManager()
+    objects = InvoiceManager()
 
     class Meta:
         verbose_name = 'Invoice'
@@ -51,7 +51,7 @@ class InvoiceLine(TimeStampedModel):
         on_delete=models.CASCADE,
     )
 
-    objects = InvoiceManager()
+    objects = InvoiceLineManager()
 
     class Meta:
         verbose_name = 'Invoice Line'
