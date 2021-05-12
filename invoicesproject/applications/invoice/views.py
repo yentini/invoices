@@ -64,7 +64,6 @@ class InvoiceListView(LoginRequiredMixin, ListView):
         year = self.request.GET.get("years", '') if self.request.GET.get("years", '') != '' else '0'
         month_number = list(calendar.month_name).index(month.lower())
         resultado = Invoice.objects.search_invoices(self.request.user, client, month_number, int(year))
-        print(resultado)
         return resultado
 
 
@@ -76,12 +75,13 @@ class InvoiceDetailView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):        
         context = super(InvoiceDetailView, self).get_context_data(**kwargs)
         # Invoice
-        context["invoice"] = InvoiceLine.objects.search_invoice(self.request.user, self.kwargs['pk'])
+        context["invoice"] = Invoice.objects.search_invoice(self.request.user, self.kwargs['pk'])
         return context
 
     def get_queryset(self):
         # consulta de busqueda
-        resultado = InvoiceLine.objects.search_invoice_lines(self.request.user, self.kwargs['pk'])
+        resultado = Invoice.objects.search_invoice_lines(self.request.user, self.kwargs['pk'])
+        print(resultado)
         return resultado
 
 
@@ -101,7 +101,7 @@ class InvoiceDetailCreateView(LoginRequiredMixin, CreateView):
         context = super(InvoiceDetailCreateView, self).get_context_data(**kwargs)
         # Invoice
         context["invoice"] = InvoiceLine.objects.search_invoice(self.request.user, self.kwargs['pk'])
-        context["invoice_lines"] = InvoiceLine.objects.search_invoice_lines(self.request.user, self.kwargs['pk'])
+        context["invoice_lines"] = Invoice.objects.search_invoice_lines(self.request.user, self.kwargs['pk'])
         return context
 
     def form_valid(self, form, **kwargs):

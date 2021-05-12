@@ -27,10 +27,16 @@
                     </thead>
                     <tbody>               
                         <tr>
-                            <td>{{ invoice.invoice__client__alias }}</td>
-                            <td>{{ invoice.invoice__code }}</td>
-                            <td>{{ invoice.invoice__date }}</td>
-                            <td>{{ invoice.total_price }}</td>                          
+                            <td>{{ invoice.client__alias }}</td>
+                            <td>{{ invoice.code }}</td>
+                            <td>{{ invoice.date }}</td>
+                            <td>
+                                {% if inv.total_price is None %}
+                                    0
+                                {% else %}
+                                    {{ invoice.total_price }}
+                                {% endif %}                                
+                            </td>                          
                         </tr>
                     </tbody>
                 </table>
@@ -42,7 +48,7 @@
                     <h2>Desglose</h2>
                 </div>
                 <div class="cell small-1 large-1 grid-x align-middle" style="margin:0px;">                   
-                    <a href="{% url 'invoice_app:invoice-line-add' invoice.invoice__id %}"><img src="{% static 'img/nuevo.png' %}" alt="Nueva línea" style="width:60px;height:35px;"></img></a>
+                    <a href="{% url 'invoice_app:invoice-line-add' invoice.id %}"><img src="{% static 'img/nuevo.png' %}" alt="Nueva línea" style="width:60px;height:35px;"></img></a>
                 </div>
                 <div class="cell small-9 large-9">
                 </div>
@@ -60,30 +66,32 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for line in invoice_lines  %}                    
-                        <tr>
-                            <td>{{ line.id }}</td>
-                            <td>{{ line.amount }}</td>
-                            <td>{{ line.net_amount }}</td>
-                            <td>{{ line.irpf }}</td>
-                            <td>{{ line.irpf_amount }}</td>
-                            <td>{{ line.iva }}</td>
-                            <td>{{ line.iva_amount }}</td>
-                            <div class="reveal" id="form_new_line_{{line.id}}" data-reveal>
-                                <form class="grid-x grid-margin-x" action="{% url 'invoice_app:invoice-line-delete' line.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}                    
-                                    <div class="large-6 cell">
-                                        <h3>¿Confirmar borrado de la línea?</h3>
-                                    </div>                                              
-                                    <div class="cell">
-                                        <button type="submit" class="success button">Confirmar</button>
-                                    </div>   
-                                </form>
-                                <button class="close-button" data-close aria-label="Close modal" type="button">
-                                    <span aria-hidden="true">&times;</span>
-                                </button> 
-                            </div>
-                            <td><a data-open="form_new_line_{{line.id}}"><img src="{% static 'img/eliminar.png' %}" alt="Eliminar" style="width:35px;height:35px;"></img></a></td>                                                                              
-                        </tr>
+                        {% for line in invoice_lines  %}   
+                            {% if line.invoice_invoiceline__amount is not None %}
+                            <tr>
+                                <td>{{ line.invoice_invoiceline__id }}</td>
+                                <td>{{ line.invoice_invoiceline__amount }}</td>
+                                <td>{{ line.invoice_invoiceline__net_amount }}</td>
+                                <td>{{ line.invoice_invoiceline__irpf }}</td>
+                                <td>{{ line.invoice_invoiceline__irpf_amount }}</td>
+                                <td>{{ line.invoice_invoiceline__iva }}</td>
+                                <td>{{ line.invoice_invoiceline__iva_amount }}</td>
+                                <div class="reveal" id="form_new_line_{{line.invoice_invoiceline__id}}" data-reveal>
+                                    <form class="grid-x grid-margin-x" action="{% url 'invoice_app:invoice-line-delete' line.invoice_invoiceline__id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}                    
+                                        <div class="large-6 cell">
+                                            <h3>¿Confirmar borrado de la línea?</h3>
+                                        </div>                                              
+                                        <div class="cell">
+                                            <button type="submit" class="success button">Confirmar</button>
+                                        </div>   
+                                    </form>
+                                    <button class="close-button" data-close aria-label="Close modal" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button> 
+                                </div>
+                                <td><a data-open="form_new_line_{{line.invoice_invoiceline__id}}"><img src="{% static 'img/eliminar.png' %}" alt="Eliminar" style="width:35px;height:35px;"></img></a></td>                                                                              
+                            </tr>
+                            {% endif %}    
                         {% empty %}
                         <tr>
                             <td colspan="7">
