@@ -30,4 +30,9 @@ urlpatterns = [
         views.InvoiceDeleteView.as_view(),
         name='invoice-delete',
     ),
+        path(
+        'invoice-add/', 
+        views.InvoiceCreateView.as_view(),
+        name='invoice-add',
+    ),
 ]

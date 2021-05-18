@@ -58,10 +58,40 @@
 
             <!-- FIN bloque de formulario -->
 
-            <!-- inicio bloque de resultados de busqueda -->
+            <!-- inicio bloque resumen de factura -->
             <div class="grid-x grid-margin-x">
                 <div class="cell small-12 large-12">
+                    <h2>Resumen</h2>
+                </div>
+                <table class="hover">
+                    <thead>
+                        <tr>
+                            <th width="50">Importe Bruto</th>
+                            <th width="50">Retención IRPF</th>
+                            <th width="50">IVA</th>
+                            <th width="50">Importe Neto con IVA</th>
+                        </tr>
+                    </thead>
+                    <tbody>               
+                        <tr>
+                            <td>{{ foot.total_price }}</td>
+                            <td>{{ foot.total_irpf_amount }}</td>
+                            <td>{{ foot.total_iva_amount }}</td>
+                            <td>{{ foot.total_net_amount }}</td>                       
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- inicio bloque de resultados de busqueda -->
+            <div class="grid-x grid-margin-x">
+                <div class="cell small-2 large-2" style="margin-right:0px;">
                     <h2>Facturas</h2>
+                </div>
+                <div class="cell small-1 large-1 grid-x align-middle" style="margin:0px;">                   
+                    <a href="{% url 'invoice_app:invoice-add' %}?client={{ current_client }}"><img src="{% static 'img/nuevo.png' %}" alt="Nueva línea" style="width:60px;height:35px;"></img></a>
+                </div>
+                <div class="cell small-9 large-9">
                 </div>
                 <table class="hover">
                     <thead>
@@ -70,6 +100,9 @@
                             <th width="50">Código de factura</th>
                             <th width="50">Fecha</th>
                             <th width="50">Importe bruto</th>
+                            <th width="50">Importe IRPF</th>
+                            <th width="50">Importe IVA</th>
+                            <th width="50">Importe neto</th>
                             <th width="40"></th>
                             <th width="40"></th>
                         </tr>
@@ -77,17 +110,38 @@
                     <tbody>
                         {% for inv in invoices  %}                    
                         <tr>
-                            <td>{{ inv.client__alias }}</td>
-                            <td><a href="{% url 'invoice_app:invoice-detail' inv.id %}">{{ inv.invoice__code }}</a></td>
+                            <td><a href="{% url 'client_app:client-update' inv.client__id %}">{{ inv.client__alias }}</a></td>
+                            <td><a href="{% url 'invoice_app:invoice-detail' inv.id %}">{{ inv.code }}</a></td>
                             <td>{{ inv.date }}</td>
                             <td>
-                                {% if inv.total_price is None %}
+                                {% if inv.total_amount is None %}
                                     0
                                 {% else %}
-                                    {{ inv.total_price }}
+                                    {{ inv.total_amount }}
                                 {% endif %}
                             </td>
-                            <div class="reveal" id="form_delete_invoice_{{inv.invoice__id}}" data-reveal>
+                            <td>
+                                {% if inv.total_irpf_amount is None %}
+                                    0
+                                {% else %}
+                                    {{ inv.total_irpf_amount }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if inv.total_iva_amount is None %}
+                                    0
+                                {% else %}
+                                    {{ inv.total_iva_amount }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if inv.total_net_amount is None %}
+                                    0
+                                {% else %}
+                                    {{ inv.total_net_amount }}
+                                {% endif %}
+                            </td>
+                            <div class="reveal" id="form_delete_invoice_{{inv.id}}" data-reveal>
                                 <form class="grid-x grid-margin-x" action="{% url 'invoice_app:invoice-delete' inv.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}                    
                                     <div class="large-6 cell">
                                         <h3>¿Confirmar borrado de la factura?</h3>

@@ -17,7 +17,7 @@ from django.views.generic import (
 
 from .models import InvoiceLine, Invoice
 from applications.client.models import Client
-from .forms import InvoiceLineForm
+from .forms import InvoiceLineForm, InvoiceForm
 
 
 # Create your views here.
@@ -32,7 +32,7 @@ class InvoiceListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):        
         context = super(InvoiceListView, self).get_context_data(**kwargs)
         # Clients
-        context["clients"] = Client.objects.all()  
+        context["clients"] = Client.objects.all() 
 
         # Months and years 
         months = set()
@@ -53,7 +53,17 @@ class InvoiceListView(LoginRequiredMixin, ListView):
         # Current parameters
         context["current_year"] = self.request.GET.get("years", '')
         context["current_month"] = self.request.GET.get("months", '')
+        month_number = list(calendar.month_name).index(context["current_month"].lower())
+        year = self.request.GET.get("years", '') if self.request.GET.get("years", '') != '' else '0'
         context["current_client"] = self.request.GET.get("client", '')
+
+        # Foot total sum
+        context["foot"] = InvoiceLine.objects.sum_total(
+            self.request.user, 
+            context["current_client"], 
+            month_number,
+            int(year),
+        ) 
 
         return context
     
@@ -81,7 +91,6 @@ class InvoiceDetailView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         # consulta de busqueda
         resultado = Invoice.objects.search_invoice_lines(self.request.user, self.kwargs['pk'])
-        print(resultado)
         return resultado
 
 
@@ -100,7 +109,7 @@ class InvoiceDetailCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):        
         context = super(InvoiceDetailCreateView, self).get_context_data(**kwargs)
         # Invoice
-        context["invoice"] = InvoiceLine.objects.search_invoice(self.request.user, self.kwargs['pk'])
+        context["invoice"] = Invoice.objects.search_invoice(self.request.user, self.kwargs['pk'])
         context["invoice_lines"] = Invoice.objects.search_invoice_lines(self.request.user, self.kwargs['pk'])
         return context
 
@@ -130,3 +139,36 @@ class InvoiceLineDeleteView(LoginRequiredMixin, DeleteView):
         super(InvoiceLineDeleteView, self).setup(request, *args, **kwargs)
         invoice_line = InvoiceLine.objects.filter(id=self.kwargs['pk']).first()
         self.success_url = reverse_lazy('invoice_app:invoice-detail', kwargs={'pk': invoice_line.invoice.id})
+
+
+class InvoiceCreateView(LoginRequiredMixin, CreateView):
+    model = Invoice
+    template_name = "invoice/add.html"
+    form_class = InvoiceForm
+    login_url = reverse_lazy('users_app:user-login')
+
+    def get_initial(self):
+        current_client = self.request.GET.get("client", '')
+        invoice_code = 'Formato: CCC-II-AAAA'
+        date_today = datetime.date.today()
+        date = (date_today - datetime.timedelta(days=date_today.day)).strftime('%Y-%m-%d')
+        if current_client:
+            client=Client.objects.filter(id=current_client).first()
+            invoice_index = client.invoice_index if client.invoice_index > 9 else f'0{client.invoice_index}'
+            invoice_code = f'{client.invoice_code}-{invoice_index}-{date_today.year}'
+
+        return {
+            'client' : current_client,
+            'code' : invoice_code,
+            'date' : date
+        }
+
+    def form_valid(self, form, **kwargs):
+        context = self.get_context_data(**kwargs)
+        invoice = form.save(commit=False)      
+        invoice.user = self.request.user
+        invoice.save()
+        invoice.client.invoice_index += 1
+        invoice.client.save()
+        self.success_url = reverse_lazy('invoice_app:invoice-detail', kwargs={'pk': invoice.id})
+        return super(InvoiceCreateView, self).form_valid(form)

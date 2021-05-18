@@ -23,14 +23,44 @@
                             <th width="50">Código de factura</th>
                             <th width="50">Fecha</th>
                             <th width="50">Importe bruto</th>
+                            <th width="50">Importe IRPF</th>
+                            <th width="50">Importe IVA</th>
+                            <th width="50">Importe neto</th>
                         </tr>
                     </thead>
                     <tbody>               
                         <tr>
-                            <td>{{ invoice.invoice__client__alias }}</td>
-                            <td><a href="{% url 'invoice_app:invoice-detail' invoice.invoice__id %}">{{ invoice.invoice__code }}</a></td>
-                            <td>{{ invoice.invoice__date }}</td>
-                            <td>{{ invoice.total_price }}</td>                          
+                            <td>{{ invoice.client__alias }}</td>
+                            <td><a href="{% url 'invoice_app:invoice-detail' invoice.id %}">{{ invoice.code }}</a></td>
+                            <td>{{ invoice.date }}</td>
+                            <td>
+                                {% if invoice.total_amount is None %}
+                                    0
+                                {% else %}
+                                    {{ invoice.total_amount }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if invoice.total_irpf_amount is None %}
+                                    0
+                                {% else %}
+                                    {{ invoice.total_irpf_amount }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if invoice.total_iva_amount is None %}
+                                    0
+                                {% else %}
+                                    {{ invoice.total_iva_amount }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if invoice.total_net_amount is None %}
+                                    0
+                                {% else %}
+                                    {{ invoice.total_net_amount }}
+                                {% endif %}
+                            </td>                             
                         </tr>
                     </tbody>
                 </table>
@@ -47,24 +77,28 @@
                         <tr>
                             <th width="50">Importe bruto</th>
                             <th width="50">Importe neto</th>
-                            <th width="50">IRPF</th>
+                            <th width="50">% IRPF</th>
                             <th width="50">Importe IRPF</th>
-                            <th width="50">IVA</th>
+                            <th width="50">% IVA</th>
                             <th width="50">Importe IVA</th>
                             <th width="40"></th>
                             <th width="40"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for line in invoice_lines  %}                    
-                        <tr>
-                            <td>{{ line.amount }}</td>
-                            <td>{{ line.net_amount }}</td>
-                            <td>{{ line.irpf }}</td>
-                            <td>{{ line.irpf_amount }}</td>
-                            <td>{{ line.iva }}</td>
-                            <td>{{ line.iva_amount }}</td>     
-                        </tr>                                  
+                        {% for line in invoice_lines  %}   
+                            {% if line.invoice_invoiceline__amount is not None %}                 
+                            <tr>
+                                <td>{{ line.invoice_invoiceline__amount }}</td>
+                                <td>{{ line.invoice_invoiceline__net_amount }}</td>
+                                <td>{{ line.invoice_invoiceline__irpf }}</td>
+                                <td>{{ line.invoice_invoiceline__irpf_amount }}</td>
+                                <td>{{ line.invoice_invoiceline__iva }}</td>
+                                <td>{{ line.invoice_invoiceline__iva_amount }}</td>  
+                                <td></td> 
+                                <td></td>    
+                            </tr>    
+                            {% endif %}                              
                         {% endfor %}
                         <tr>
                             <form method="POST" enctype="multipart/form-data">{% csrf_token %}    
@@ -77,7 +111,7 @@
                                 <td>
                                     <button type="submit" class="success button">Guardar</button>
                                 </td>
-                                <td><a href="{% url 'invoice_app:invoice-detail' invoice.invoice__id %}"><img src="{% static 'img/eliminar.png' %}" alt="Ver" style="width:35px;height:35px;"></img></a></td>                                           
+                                <td><a href="{% url 'invoice_app:invoice-detail' invoice.id %}"><img src="{% static 'img/eliminar.png' %}" alt="Ver" style="width:35px;height:35px;"></img></a></td>                                           
                             </form>                  
                         </tr>
                     </tbody>

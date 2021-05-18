@@ -1,0 +1,49 @@
+<!-- head para PC -->
+{% extends "invoice/base_invoice.html" %}
+
+{% load  static %}
+
+{% block content %}
+
+{% include "includes/header.html" %}
+
+<div class="grid-container">
+    <div class="grid-x grid-margin-x" style="margin-top: 1em;">
+        <!-- primer bloque pantalla -->
+        <div class="cell small-12 large-12">
+            <!-- inicio bloque cabecera de factura -->
+            <div class="grid-x grid-margin-x">
+                <div class="cell small-12 large-12">
+                    <h2>Nueva Factura</h2>
+                </div>
+                <table class="hover">
+                    <thead>
+                        <tr>
+                            <th width="50">Codigo</th>
+                            <th width="150">Cliente</th>
+                            <th width="50">Fecha</th>
+                            <th width="50"></th>
+                        </tr>
+                    </thead>
+                    <tbody>               
+                        <tr>
+                            <form method="POST" enctype="multipart/form-data">{% csrf_token %}    
+                                <td>{{ form.code }}</td>
+                                <td>{{ form.client }}</td>
+                                <td>{{ form.date }}</td>
+                                <td>
+                                    <button type="submit" class="success button">Guardar</button>
+                                </td>                                
+                            </form>   
+                            <button class="fdatepicker">Checkin »</button>               
+                        </tr>
+                    </tbody>
+                </table>
+            </div>            
+        </div>
+        <!-- FIN primer bloque pantalla  -->    
+    </div>
+</div>
+{% include "includes/footer.html" %}
+
+{% endblock content %}

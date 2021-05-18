@@ -44,7 +44,7 @@ class Client(TimeStampedModel):
         unique_together = ('cif','name')
 
     def __str__(self):
-        return self.name + '-' + self.cif
+        return self.alias + '-' + self.name
 
     def save(self, *args, **kwargs):
         super(Client, self).save(*args, **kwargs)
